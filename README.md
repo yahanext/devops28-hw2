@@ -93,9 +93,21 @@ ls % rbt.log 3>&2 2>&1 1>&3 | less
 
 
 1. Что выведет команда `cat /proc/$$/environ`? Как ещё можно получить аналогичный по содержанию вывод?
-2. 
+```
+переменные окружения процесса $$ при запуске если в терминале то процесса bash
+аналог env
+printenv
+```
+
 3. Используя `man`, опишите, что доступно по адресам `/proc/<PID>/cmdline`, `/proc/<PID>/exe`.
+```
+содержит полную командную строку процесса пока процесс не zombi
+содержит символическую ссылку на актуальный путь к команде запущеного процесса
+```
 4. Узнайте, какую наиболее старшую версию набора инструкций SSE поддерживает ваш процессор с помощью `/proc/cpuinfo`.
+```
+sse4_2
+```
 5. При открытии нового окна терминала и `vagrant ssh` создаётся новая сессия и выделяется pty.  
 	Это можно подтвердить командой `tty`, которая упоминалась в лекции 3.2.  
 	
@@ -107,10 +119,44 @@ ls % rbt.log 3>&2 2>&1 1>&3 | less
     ```
 
 	Почитайте, почему так происходит и как изменить поведение.
+```
+
+Все работает без проблем изначально:
+
+yaha@myaspire:~$ cd projects/ubuntu
+yaha@myaspire:~/projects/ubuntu$ vagrant ssh
+Welcome to Ubuntu 20.04.5 LTS (GNU/Linux 5.4.0-135-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Wed 15 Mar 2023 04:10:40 PM UTC
+
+  System load:  0.24               Processes:             147
+  Usage of /:   12.3% of 30.34GB   Users logged in:       0
+  Memory usage: 5%                 IPv4 address for eth0: 10.0.2.15
+  Swap usage:   0%
+
+
+This system is built by the Bento project by Chef Software
+More information can be found at https://github.com/chef/bento
+Last login: Wed Mar 15 16:05:24 2023 from 10.0.2.2
+vagrant@vagrant:~$ ssh localhost 'tty'
+vagrant@localhost's password: 
+```
+
+
 	
 1. Бывает, что есть необходимость переместить запущенный процесс из одной сессии в другую. Попробуйте сделать это, воспользовавшись `reptyr`. Например, так можно перенести в `screen` процесс, который вы запустили по ошибке в обычной SSH-сессии.
+```
+утилита полезная но работает не везде, необходимо править echo 0 > /proc/sys/kernel/yama/ptrace_scope
+```
 1. `sudo echo string > /root/new_file` не даст выполнить перенаправление под обычным пользователем, так как перенаправлением занимается процесс shell, который запущен без `sudo` под вашим пользователем. Для решения этой проблемы можно использовать конструкцию `echo string | sudo tee /root/new_file`. Узнайте, что делает команда `tee` и почему в отличие от `sudo echo` команда с `sudo tee` будет работать.
-
+```
+tee читает стандартный ввод и пишет в стандартный выход и файл.
+Второй вариент с sudo tee работать будет т.к передаем данные от обычного пользователя через pipe в команду tee работающую с правами суперпользователя
+```
 ----
 
 ### Правила приёма домашнего задания
